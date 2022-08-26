@@ -161,6 +161,9 @@ curl "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-Countr
 && tar -xzvf GeoLite2-Country.tar.gz \
 && mv GeoLite2-Country_*/GeoLite2-Country.mmdb /usr/share/graylog/data/data/
 ```
+Alternatively you can download & untar the file locally and copy it to the running graylog container with:
+ 
+`docker cp GeoLite2-Country_*/GeoLite2-Country.mmdb graylog:/usr/share/graylog/data/data/`
 
 ### Configure Additional Settings
 
