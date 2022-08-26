@@ -132,7 +132,7 @@ chmod 755 /usr/local/bin/telegraf_temperature.sh /usr/local/bin/telegraf_pfifgw.
 
 Test these out before starting the telegraf service by executing them
 
-`sudo telegraf_pfifgw.php`
+`php telegraf_pfifgw.php`
 
 `telegraf_temperature.sh`
 
