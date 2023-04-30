@@ -523,7 +523,7 @@
             "type": "influxdb",
             "uid": "${dataSource}"
           },
-          "query": "from(bucket: \"opnsense\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"suricata\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"alert_signature\")\r\n  |> map(fn: (r) => ({ r with _count: r[\"_value\"]}))\r\n  |> group(columns: [\"_value\"])\r\n  |> count(column: \"_count\")\r\n  |> group()\r\n  |> sort(desc:true, columns: [\"_count\"])\r\n  |> limit(n:10)",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"suricata\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"alert_signature\")\r\n  |> map(fn: (r) => ({ r with _count: r[\"_value\"]}))\r\n  |> group(columns: [\"_value\"])\r\n  |> count(column: \"_count\")\r\n  |> group()\r\n  |> sort(desc:true, columns: [\"_count\"])\r\n  |> limit(n:10)",
           "refId": "A"
         }
       ],
