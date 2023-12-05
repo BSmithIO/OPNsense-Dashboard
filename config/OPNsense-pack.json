@@ -1,7 +1,7 @@
 {
   "v": "1",
   "id": "6f88399d-9c58-4a70-b7fe-30d4a057132a",
-  "rev": 2,
+  "rev": 3,
   "name": "OPNsense Dashboard",
   "summary": "This pack includes everything needed to setup Graylog for the dashboard.",
   "description": "",
@@ -15,7 +15,7 @@
         "name": "input",
         "version": "1"
       },
-      "id": "a9e59e12-e4a8-4a9f-acda-960e78b8f9b6",
+      "id": "ea0188df-eb94-48be-81c0-7776f995b89b",
       "data": {
         "title": {
           "@type": "string",
@@ -410,7 +410,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -420,7 +420,7 @@
         "name": "lookup_adapter",
         "version": "1"
       },
-      "id": "056ed2d3-38f8-41cc-8cb0-b9fdb8d95d32",
+      "id": "475baaaa-123f-471c-96a0-b405277f6cb5",
       "data": {
         "_scope": {
           "@type": "string",
@@ -464,7 +464,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -474,7 +474,7 @@
         "name": "lookup_cache",
         "version": "1"
       },
-      "id": "776809e0-ea08-45e0-9df3-f06bb15585ed",
+      "id": "3216f9ce-01e9-4fcc-81b2-cc3f0d852f75",
       "data": {
         "_scope": {
           "@type": "string",
@@ -518,7 +518,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -528,7 +528,7 @@
         "name": "lookup_table",
         "version": "1"
       },
-      "id": "19a27a83-5ffc-4f8d-a39c-a00d7c4ea36a",
+      "id": "f00b99f5-95ea-45c4-acd8-6c7b46ff2310",
       "data": {
         "default_single_value_type": {
           "@type": "string",
@@ -536,7 +536,7 @@
         },
         "cache_name": {
           "@type": "string",
-          "@value": "776809e0-ea08-45e0-9df3-f06bb15585ed"
+          "@value": "3216f9ce-01e9-4fcc-81b2-cc3f0d852f75"
         },
         "name": {
           "@type": "string",
@@ -552,7 +552,7 @@
         },
         "data_adapter_name": {
           "@type": "string",
-          "@value": "056ed2d3-38f8-41cc-8cb0-b9fdb8d95d32"
+          "@value": "475baaaa-123f-471c-96a0-b405277f6cb5"
         },
         "_scope": {
           "@type": "string",
@@ -574,7 +574,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -584,7 +584,7 @@
         "name": "pipeline",
         "version": "1"
       },
-      "id": "5a7ec7eb-d413-4d6f-96e1-70a73f4df8e1",
+      "id": "a1bc4b31-38e6-4227-a6b0-d14550fab0dc",
       "data": {
         "title": {
           "@type": "string",
@@ -596,19 +596,19 @@
         },
         "source": {
           "@type": "string",
-          "@value": "pipeline \"GeoIP\"\nstage 0 match either\nrule \"GeoIP lookup: src-ip\"\nend"
+          "@value": "pipeline \"GeoIP\"\nstage 0 match either\nrule \"GeoIP lookup: src-ip\"\nrule \"GeoIP lookup: dst-ip\"\nend"
         },
         "connected_streams": [
           {
             "@type": "string",
-            "@value": "67c8983f-c842-4a33-9650-94f19a793e0d"
+            "@value": "ec694145-91a0-4532-b6c5-777defae71e7"
           }
         ]
       },
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -618,7 +618,35 @@
         "name": "pipeline_rule",
         "version": "1"
       },
-      "id": "9bea4894-60ec-495b-8531-0f5e27fc8025",
+      "id": "b4f9a033-3239-4f07-a95c-d0c3839c780e",
+      "data": {
+        "title": {
+          "@type": "string",
+          "@value": "GeoIP lookup: dst-ip"
+        },
+        "description": {
+          "@type": "string",
+          "@value": "Destination IP geo location lookup"
+        },
+        "source": {
+          "@type": "string",
+          "@value": "rule \"GeoIP lookup: dst-ip\"\nwhen\nhas_field(\"dst-ip\")\nthen\nlet dst = lookup(\"geoip\", to_string($message.\"dst-ip\"));\nset_field(\"dst-ip-geo-location\", dst[\"coordinates\"]);\nset_field(\"dst-ip-geo-country\", dst[\"country\"].iso_code);\nset_field(\"dst-ip-geo-city\", dst[\"city\"].names.en);\nend"
+        }
+      },
+      "constraints": [
+        {
+          "type": "server-version",
+          "version": ">=5.2.1+4337e8c"
+        }
+      ]
+    },
+    {
+      "v": "1",
+      "type": {
+        "name": "pipeline_rule",
+        "version": "1"
+      },
+      "id": "e6d62d08-b7d0-40ec-b041-c8faa89ba4e2",
       "data": {
         "title": {
           "@type": "string",
@@ -626,17 +654,17 @@
         },
         "description": {
           "@type": "string",
-          "@value": ""
+          "@value": "Source IP geo location lookup"
         },
         "source": {
           "@type": "string",
-          "@value": "rule \"GeoIP lookup: src-ip\"\nwhen\nhas_field(\"src-ip\")\nthen\nlet geo = lookup(\"geoip\", to_string($message.\"src-ip\"));\nset_field(\"src-ip-geo-location\", geo[\"coordinates\"]);\nset_field(\"src-ip-geo-country\", geo[\"country\"].iso_code);\nset_field(\"src-ip-geo-city\", geo[\"city\"].names.en);\nend"
+          "@value": "rule \"GeoIP lookup: src-ip\"\nwhen\nhas_field(\"src-ip\")\nthen\nlet src = lookup(\"geoip\", to_string($message.\"src-ip\"));\nset_field(\"src-ip-geo-location\", src[\"coordinates\"]);\nset_field(\"src-ip-geo-country\", src[\"country\"].iso_code);\nset_field(\"src-ip-geo-city\", src[\"city\"].names.en);\nend"
         }
       },
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     },
@@ -646,7 +674,7 @@
         "name": "stream",
         "version": "1"
       },
-      "id": "67c8983f-c842-4a33-9650-94f19a793e0d",
+      "id": "ec694145-91a0-4532-b6c5-777defae71e7",
       "data": {
         "alarm_callbacks": [],
         "outputs": [],
@@ -703,7 +731,7 @@
       "constraints": [
         {
           "type": "server-version",
-          "version": ">=5.0.2+59d96f8"
+          "version": ">=5.2.1+4337e8c"
         }
       ]
     }

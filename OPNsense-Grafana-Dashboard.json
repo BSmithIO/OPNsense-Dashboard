@@ -1,4 +1,79 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_INFLUXDB2",
+      "label": "influxdb2",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "influxdb",
+      "pluginName": "InfluxDB"
+    },
+    {
+      "name": "DS_ELASTICSEARCH",
+      "label": "elasticsearch",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "elasticsearch",
+      "pluginName": "Elasticsearch"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "datasource",
+      "id": "elasticsearch",
+      "name": "Elasticsearch",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "geomap",
+      "name": "Geomap",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "10.2.2"
+    },
+    {
+      "type": "datasource",
+      "id": "influxdb",
+      "name": "InfluxDB",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "piechart",
+      "name": "Pie chart",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -24,7 +99,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 1,
+  "id": null,
   "links": [],
   "liveNow": true,
   "panels": [
@@ -57,7 +132,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -109,14 +184,15 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -20s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"system\" and\r\n    r._field == \"n_users\"\r\n  )\r\n  |> keep(columns: [\"_value\"])\r\n  |> last()",
           "refId": "A"
@@ -128,7 +204,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -169,6 +245,8 @@
       "id": 4,
       "maxDataPoints": 9000,
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -181,12 +259,12 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -20s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"cpu\" and\r\n    r._field == \"usage_idle\" and\r\n    r.cpu == \"cpu-total\"\r\n  )\r\n  |> map(fn: (r) => ({\r\n        r with\r\n        _value: r._value * -1.0 + 100.0\r\n      })\r\n    )\r\n  |> keep(columns: [\"_value\"])\r\n  |> last()",
           "refId": "A"
@@ -196,67 +274,104 @@
       "type": "gauge"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 6,
         "w": 6,
         "x": 5,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"cpu\" and\r\n    r._field == \"usage_idle\")\r\n  |> map(fn: (r) => ({\r\n        r with\r\n        _value: r._value * -1.0 + 100.0\r\n      })\r\n    )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> drop(columns: [\"host\"])",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "CPU",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "labelsToFields",
@@ -282,37 +397,12 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:39",
-          "decimals": 0,
-          "format": "percent",
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:40",
-          "decimals": 2,
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -321,7 +411,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "filterable": false,
             "inspect": false,
             "minWidth": 1
@@ -349,7 +441,9 @@
       },
       "id": 8,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -360,11 +454,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"processes\" and\r\n    r._field =~ /running|idle|sleeping|wait|blocked|zombies/\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  |> last()",
           "refId": "A"
@@ -413,96 +508,108 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 6,
         "w": 6,
         "x": 18,
         "y": 1
       },
-      "hiddenSeries": false,
       "id": 10,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"system\" and\r\n    r._field =~ /load1|load5|load15/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Load",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:112",
-          "decimals": 1,
-          "format": "none",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:113",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -557,14 +664,15 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -20s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"system\" and\r\n    r._field == \"uptime_format\"\r\n  )\r\n  |> keep(columns: [\"_value\"])\r\n  |> last()\r\n",
           "refId": "A"
@@ -575,7 +683,8 @@
     },
     {
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -584,7 +693,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
             "inspect": false,
             "minWidth": 1
           },
@@ -615,7 +726,9 @@
       },
       "id": 16,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -624,11 +737,12 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"pf\" and\r\n    r._field =~ /match|state-mismatch|state-insert/\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  |> last()",
           "refId": "A"
@@ -670,77 +784,104 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
-      "decimals": 2,
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 7,
         "x": 0,
         "y": 7
       },
-      "hiddenSeries": false,
       "id": 12,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "hide": false,
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.device != \"devfs\" and\r\n    r.device =~ /^${Disk:regex}$/ and\r\n    r._measurement == \"disk\" and\r\n    r._field == \"used_percent\" \r\n  )",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Disk Utilization",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "labelsToFields",
@@ -749,100 +890,107 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:206",
-          "format": "percent",
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:207",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "percent"
         },
         "overrides": []
       },
-      "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 5,
         "w": 9,
         "x": 7,
         "y": 7
       },
-      "hiddenSeries": false,
       "id": 14,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"mem\" and\r\n    r._field == \"used_percent\"\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  ",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Ram",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "organize",
@@ -855,94 +1003,105 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:416",
-          "format": "percent",
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:417",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 5,
         "w": 8,
         "x": 16,
         "y": 7
       },
-      "hiddenSeries": false,
       "id": 18,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "rightSide": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.sensor =~ /^${Sensor:regex}$/ and\r\n    r._measurement == \"temperature\" and\r\n    r._field == \"degrees\"\r\n  )\r\n  |> aggregateWindow(every:10s, fn: last)",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Temperature Sensors",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "labelsToFields",
@@ -951,29 +1110,7 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:33",
-          "format": "celsius",
-          "logBase": 1,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:34",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "collapsed": false,
@@ -1004,7 +1141,7 @@
     {
       "datasource": {
         "type": "elasticsearch",
-        "uid": "${ESdataSource}"
+        "uid": "${DS_ELASTICSEARCH}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1058,9 +1195,10 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "bucketAggs": [
@@ -1078,7 +1216,7 @@
           ],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "${ESdataSource}"
+            "uid": "${DS_ELASTICSEARCH}"
           },
           "metrics": [
             {
@@ -1098,50 +1236,140 @@
       "type": "stat"
     },
     {
-      "circleMaxSize": "",
-      "circleMinSize": "",
-      "colors": [
-        "#37872D",
-        "#E0B400",
-        "#C4162A",
-        "#8F3BB8"
-      ],
       "datasource": {
         "type": "elasticsearch",
-        "uid": "${ESdataSource}"
+        "uid": "${DS_ELASTICSEARCH}"
       },
-      "decimals": 0,
-      "esGeoPoint": "src_location",
-      "esLocationName": "src_ip",
-      "esMetric": "Count",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#37872D",
+                "value": null
+              },
+              {
+                "color": "#E0B400",
+                "value": 10
+              },
+              {
+                "color": "#C4162A",
+                "value": 100
+              },
+              {
+                "color": "#8F3BB8",
+                "value": 500
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 11,
         "w": 13,
         "x": 6,
         "y": 13
       },
-      "height": "",
-      "hideEmpty": false,
-      "hideZero": false,
       "id": 59,
-      "initialZoom": "1",
       "links": [],
-      "locationData": "countries",
-      "mapCenter": "(0°, 0°)",
-      "mapCenterLatitude": 0,
-      "mapCenterLongitude": 0,
       "maxDataPoints": 1,
-      "mouseWheelZoom": false,
-      "showLegend": true,
-      "stickyLabels": false,
-      "tableQueryOptions": {
-        "geohashField": "geohash",
-        "labelField": "src_ip_geo_country",
-        "latitudeField": "src_ip_lat",
-        "longitudeField": "src_ip_long",
-        "metricField": "Count",
-        "queryType": "coordinates"
+      "options": {
+        "basemap": {
+          "name": "Basemap",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": false,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": true,
+              "style": {
+                "color": {
+                  "field": "Count",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "Count",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "text": {
+                  "field": "",
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "gazetteer": "public/gazetteer/countries.json",
+              "lookup": "src-ip-geo-country",
+              "mode": "lookup"
+            },
+            "name": "Layer 0",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "fit",
+          "lat": 0,
+          "lon": 0,
+          "shared": false,
+          "zoom": 15
+        }
       },
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "alias": "",
@@ -1156,22 +1384,11 @@
                 "size": "0"
               },
               "type": "terms"
-            },
-            {
-              "field": "timestamp",
-              "id": "3",
-              "settings": {
-                "interval": "auto",
-                "min_doc_count": "0",
-                "timeZone": "utc",
-                "trimEdges": "0"
-              },
-              "type": "date_histogram"
             }
           ],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "${ESdataSource}"
+            "uid": "${DS_ELASTICSEARCH}"
           },
           "dsType": "elasticsearch",
           "hide": false,
@@ -1187,17 +1404,14 @@
           "timeField": "timestamp"
         }
       ],
-      "thresholds": "10,100,500",
       "title": "Firewall Blocked Event Locations on $iface",
-      "type": "grafana-worldmap-panel",
-      "unitPlural": "",
-      "unitSingle": "",
-      "valueName": "total"
+      "transformations": [],
+      "type": "geomap"
     },
     {
       "datasource": {
         "type": "elasticsearch",
-        "uid": "${ESdataSource}"
+        "uid": "${DS_ELASTICSEARCH}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1242,9 +1456,10 @@
           "values": true
         },
         "text": {},
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "bucketAggs": [
@@ -1264,7 +1479,7 @@
           ],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "${ESdataSource}"
+            "uid": "${DS_ELASTICSEARCH}"
           },
           "dsType": "elasticsearch",
           "metrics": [
@@ -1288,7 +1503,7 @@
     {
       "datasource": {
         "type": "elasticsearch",
-        "uid": "${ESdataSource}"
+        "uid": "${DS_ELASTICSEARCH}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1371,7 +1586,7 @@
           ],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "${ESdataSource}"
+            "uid": "${DS_ELASTICSEARCH}"
           },
           "dsType": "elasticsearch",
           "metrics": [
@@ -1394,7 +1609,7 @@
     {
       "datasource": {
         "type": "elasticsearch",
-        "uid": "${ESdataSource}"
+        "uid": "${DS_ELASTICSEARCH}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1476,7 +1691,7 @@
           ],
           "datasource": {
             "type": "elasticsearch",
-            "uid": "${ESdataSource}"
+            "uid": "${DS_ELASTICSEARCH}"
           },
           "dsType": "elasticsearch",
           "metrics": [
@@ -1522,68 +1737,102 @@
       "type": "row"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 10,
+              "type": "log"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 0,
         "y": 25
       },
-      "hiddenSeries": false,
       "id": 26,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.gateway_name =~ /^${Gateway:regex}$/ and\r\n    r._measurement == \"gateways\" and\r\n    r._field == \"delay\"\r\n  )",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Gateway RTT - $Gateway ",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "labelsToFields",
@@ -1592,34 +1841,12 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:164",
-          "format": "ms",
-          "logBase": 10,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:165",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1628,7 +1855,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 1
@@ -1656,8 +1885,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
-                "value": null
+                "color": "text"
               }
             ]
           }
@@ -1675,8 +1903,7 @@
                   "mode": "absolute",
                   "steps": [
                     {
-                      "color": "transparent",
-                      "value": null
+                      "color": "transparent"
                     },
                     {
                       "color": "red",
@@ -1705,7 +1932,9 @@
       },
       "id": 32,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1716,12 +1945,12 @@
         "showHeader": true,
         "sortBy": []
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"interface\"\r\n  )\r\n  |> last()\r\n  |> group()\r\n  |> keep(columns: [\"friendlyname\", \"ip4_address\", \"ip4_subnet\", \"mac_address\", \"name\", \"_value\"])\r\n  |> sort(columns:[\"name\"])",
           "refId": "A"
@@ -1755,66 +1984,103 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
       "gridPos": {
         "h": 8,
         "w": 8,
         "x": 0,
         "y": 33
       },
-      "hiddenSeries": false,
       "id": 38,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.gateway_name =~ /^${Gateway:regex}$/ and\r\n    r._measurement == \"gateways\" and\r\n    r._field == \"loss\"\r\n  )",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "Gateway Loss - $Gateway ",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "labelsToFields",
@@ -1823,37 +2089,12 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:97",
-          "decimals": 0,
-          "format": "percent",
-          "logBase": 1,
-          "max": "100",
-          "min": "0",
-          "show": true
-        },
-        {
-          "$$hashKey": "object:98",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1862,7 +2103,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "filterable": true,
             "inspect": false,
             "minWidth": 1
@@ -1888,8 +2131,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "text",
-                "value": null
+                "color": "text"
               }
             ]
           }
@@ -1904,7 +2146,9 @@
       },
       "id": 46,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -1919,12 +2163,12 @@
           }
         ]
       },
-      "pluginVersion": "9.2.10",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"gateways\" and\r\n    r._field =~ /gwdescr|source|monitor|status|gateway_name|interface/\r\n    )\r\n  |> last()\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
           "refId": "A"
@@ -1970,6 +2214,322 @@
     },
     {
       "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      },
+      "id": 232,
+      "panels": [],
+      "title": "Bandwidth Stats",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "text",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "MBs"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "download"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 355,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"internet_speed\" and\r\n    r._field  =~ /download|upload/\r\n  )\r\n  |> group(columns: [\"_measurement\", \"_field\", \"source\"])\r\n  |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Bandwidth",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "max"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dtdurationms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 50
+      },
+      "id": 354,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"internet_speed\" and\r\n    r._field == \"latency\"\r\n  )\r\n  |> group(columns: [\"_measurement\", \"source\"])\r\n  |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Latency",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "max"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dtdurationms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 50
+      },
+      "id": 353,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"internet_speed\" and\r\n    r._field == \"jitter\"\r\n  )\r\n  |> group(columns: [\"_measurement\", \"source\"])\r\n  |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Jitter",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
       "datasource": {
         "type": "influxdb",
         "uid": "${dataSource}"
@@ -1978,7 +2538,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 41
+        "y": 58
       },
       "id": 30,
       "panels": [],
@@ -1998,7 +2558,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "${dataSource}"
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2007,560 +2567,11 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "filterable": true,
             "inspect": false,
-            "minWidth": 1
-          },
-          "mappings": [
-            {
-              "options": {
-                "0": {
-                  "index": 2,
-                  "text": "DOWN"
-                },
-                "1": {
-                  "index": 1,
-                  "text": "UP"
-                },
-                "2": {
-                  "index": 0,
-                  "text": "UNKNOWN"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "text",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 0
-              },
-              {
-                "color": "green",
-                "value": 1
-              },
-              {
-                "color": "orange",
-                "value": 2
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 24,
-        "x": 0,
-        "y": 42
-      },
-      "id": 28,
-      "options": {
-        "footer": {
-          "fields": "",
-          "reducer": [
-            "sum"
-          ],
-          "show": false
-        },
-        "frameIndex": 7,
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "9.2.10",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${dataSource}"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.name =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"interface\" and\r\n    r._field == \"status\")\r\n  |> group()\r\n  |> last()\r\n  |> keep(columns: [\"friendlyname\", \"ip4_address\", \"name\", \"ip4_subnet\" \"mac_address\", \"_value\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "Interface Summary",
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {
-              "_value": 5,
-              "friendlyname": 1,
-              "ip4_address": 2,
-              "ip4_subnet": 3,
-              "mac_address": 4,
-              "name": 0
-            },
-            "renameByName": {
-              "_value": "Status",
-              "friendlyname": "Friendly Name",
-              "ip4_address": "IPV4 Address",
-              "ip4_subnet": "Subnet",
-              "mac_address": "Physical Address",
-              "name": "Interface"
-            }
-          }
-        }
-      ],
-      "type": "table"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "${dataSource}"
-      },
-      "decimals": 2,
-      "description": "",
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 45
-      },
-      "hiddenSeries": false,
-      "id": 34,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "maxDataPoints": 9000,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "${dataSource}"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and \r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "WAN Traffic - Bits/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [
-        {
-          "id": "concatenate",
-          "options": {
-            "frameNameLabel": "frame",
-            "frameNameMode": "drop"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "Time": "",
-              "bytes_recv": "Bits Recv",
-              "bytes_sent": "Bits Sent"
-            }
-          }
-        }
-      ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:63",
-          "decimals": 2,
-          "format": "bps",
-          "logBase": 2,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:64",
-          "decimals": 2,
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "datasource": {
-        "uid": "${dataSource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bps"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 5,
-        "x": 6,
-        "y": 45
-      },
-      "id": 36,
-      "maxDataPoints": 9000,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.2.10",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "${dataSource}"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  |> last()",
-          "refId": "A"
-        }
-      ],
-      "title": "WAN Traffic - Bits/sec",
-      "transformations": [
-        {
-          "id": "concatenate",
-          "options": {
-            "frameNameLabel": "frame",
-            "frameNameMode": "drop"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Time": true
-            },
-            "indexByName": {},
-            "renameByName": {
-              "bytes_recv": "Bits Recv",
-              "bytes_sent": "Bits Sent"
-            }
-          }
-        }
-      ],
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "uid": "${dataSource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 2,
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "index": 0,
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 5,
-        "x": 11,
-        "y": 45
-      },
-      "hideTimeOverride": true,
-      "id": 40,
-      "maxDataPoints": 9000,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
-      },
-      "pluginVersion": "9.2.10",
-      "targets": [
-        {
-          "datasource": {
-            "uid": "${dataSource}"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30d)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 1h, fn: last)\r\n  |> difference(nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
-          "refId": "A"
-        }
-      ],
-      "timeFrom": "now/M",
-      "title": "WAN - Bandwidth",
-      "transformations": [
-        {
-          "id": "concatenate",
-          "options": {
-            "frameNameLabel": "frame",
-            "frameNameMode": "drop"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "bytes_recv": "Bytes Recv - This Month",
-              "bytes_sent": "Bytes Sent - This Month"
-            }
-          }
-        }
-      ],
-      "type": "stat"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": {
-        "uid": "${dataSource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "fill": 0,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 8,
-        "x": 16,
-        "y": 45
-      },
-      "hiddenSeries": false,
-      "id": 42,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "maxDataPoints": 9000,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "9.2.10",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": {
-            "uid": "${dataSource}"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.interface =~ /^${WAN:regex}$/ and \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /packets_recv|packets_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "WAN - Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "transformations": [
-        {
-          "id": "concatenate",
-          "options": {
-            "frameNameLabel": "frame",
-            "frameNameMode": "drop"
-          }
-        },
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {},
-            "indexByName": {},
-            "renameByName": {
-              "packets_recv": "Packets Recv",
-              "packets_sent": "Packets Sent"
-            }
-          }
-        }
-      ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:191",
-          "decimals": 2,
-          "format": "short",
-          "logBase": 2,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:192",
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "collapsed": false,
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${dataSource}"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 52
-      },
-      "id": 48,
-      "panels": [],
-      "repeat": "LAN",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "${dataSource}"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "LAN Interface  - $LAN",
-      "type": "row"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "${dataSource}"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
-            "displayMode": "color-text",
-            "filterable": true,
             "minWidth": 1
           },
           "mappings": [
@@ -2609,11 +2620,13 @@
         "h": 3,
         "w": 24,
         "x": 0,
-        "y": 53
+        "y": 59
       },
-      "id": 52,
+      "id": 28,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -2621,16 +2634,17 @@
           "show": false
         },
         "frameIndex": 7,
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": []
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "${dataSource}"
+            "uid": "${DS_INFLUXDB2}"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.name =~ /^${LAN:regex}$/ and\r\n    r._measurement == \"interface\" and\r\n    r._field == \"status\")\r\n  |> group()\r\n  |> last()\r\n  |> keep(columns: [\"friendlyname\", \"ip4_address\", \"name\", \"ip4_subnet\" \"mac_address\", \"_value\"])",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.name =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"interface\" and\r\n    r._field == \"status\")\r\n  |> group()\r\n  |> last()\r\n  |> keep(columns: [\"friendlyname\", \"ip4_address\", \"name\", \"ip4_subnet\" \"mac_address\", \"_value\"])",
           "refId": "A"
         }
       ],
@@ -2662,68 +2676,115 @@
       "type": "table"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "decimals": 2,
       "description": "",
-      "fill": 1,
-      "fillGradient": 0,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bytes_recv"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
         "h": 7,
         "w": 6,
         "x": 0,
-        "y": 56
+        "y": 62
       },
-      "hiddenSeries": false,
-      "id": 49,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": true,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
+      "id": 34,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${LAN:regex}$/ and \r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and \r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "${LAN} Traffic - Bits/sec",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
+      "title": "WAN Traffic - Bits/sec",
       "transformations": [
         {
           "id": "concatenate",
@@ -2736,47 +2797,21 @@
           "id": "organize",
           "options": {
             "excludeByName": {},
-            "indexByName": {
-              "Time": 0,
-              "bytes_recv": 1,
-              "bytes_sent": 2
-            },
+            "indexByName": {},
             "renameByName": {
+              "Time": "",
               "bytes_recv": "Bits Recv",
               "bytes_sent": "Bits Sent"
             }
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:63",
-          "decimals": 2,
-          "format": "bps",
-          "logBase": 2,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:64",
-          "decimals": 2,
-          "format": "short",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     },
     {
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2812,7 +2847,613 @@
         "h": 7,
         "w": 5,
         "x": 6,
-        "y": 56
+        "y": 62
+      },
+      "id": 36,
+      "maxDataPoints": 9000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "WAN Traffic - Bits/sec",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "drop"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "bytes_recv": "Bits Recv",
+              "bytes_sent": "Bits Sent"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "index": 0,
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 11,
+        "y": 62
+      },
+      "hideTimeOverride": true,
+      "id": 40,
+      "maxDataPoints": 9000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30d)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${WAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 1h, fn: last)\r\n  |> difference(nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": "now/M",
+      "title": "WAN - Bandwidth",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "drop"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "bytes_recv": "Bytes Recv - This Month",
+              "bytes_sent": "Bytes Sent - This Month"
+            }
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "packets_recv"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 62
+      },
+      "id": 42,
+      "maxDataPoints": 9000,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.interface =~ /^${WAN:regex}$/ and \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /packets_recv|packets_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
+          "refId": "A"
+        }
+      ],
+      "title": "WAN - Throughput",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "drop"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "packets_recv": "Packets Recv",
+              "packets_sent": "Packets Sent"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${dataSource}"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 212
+      },
+      "id": 48,
+      "panels": [],
+      "repeat": "LAN",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${dataSource}"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "LAN Interface  - $LAN",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "color-text"
+            },
+            "filterable": true,
+            "inspect": false,
+            "minWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 2,
+                  "text": "DOWN"
+                },
+                "1": {
+                  "index": 1,
+                  "text": "UP"
+                },
+                "2": {
+                  "index": 0,
+                  "text": "UNKNOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "text"
+              },
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "green",
+                "value": 1
+              },
+              {
+                "color": "orange",
+                "value": 2
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 213
+      },
+      "id": 52,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "frameIndex": 7,
+        "showHeader": true
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30s)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.name =~ /^${LAN:regex}$/ and\r\n    r._measurement == \"interface\" and\r\n    r._field == \"status\")\r\n  |> group()\r\n  |> last()\r\n  |> keep(columns: [\"friendlyname\", \"ip4_address\", \"name\", \"ip4_subnet\" \"mac_address\", \"_value\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Interface Summary",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "_value": 5,
+              "friendlyname": 1,
+              "ip4_address": 2,
+              "ip4_subnet": 3,
+              "mac_address": 4,
+              "name": 0
+            },
+            "renameByName": {
+              "_value": "Status",
+              "friendlyname": "Friendly Name",
+              "ip4_address": "IPV4 Address",
+              "ip4_subnet": "Subnet",
+              "mac_address": "Physical Address",
+              "name": "Interface"
+            }
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "linearThreshold": 8,
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bytes_recv"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 216
+      },
+      "id": 49,
+      "maxDataPoints": 9000,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.2.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${LAN:regex}$/ and \r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
+          "refId": "A"
+        }
+      ],
+      "title": "${LAN} Traffic - Bits/sec",
+      "transformations": [
+        {
+          "id": "concatenate",
+          "options": {
+            "frameNameLabel": "frame",
+            "frameNameMode": "drop"
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Time": 0,
+              "bytes_recv": 1,
+              "bytes_sent": 2
+            },
+            "renameByName": {
+              "bytes_recv": "Bits Recv",
+              "bytes_sent": "Bits Sent"
+            }
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "index": 0,
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 6,
+        "y": 216
       },
       "id": 51,
       "maxDataPoints": 9000,
@@ -2829,13 +3470,15 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -1m)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${LAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({\r\n      r with\r\n      _value: r._value * 8.0\r\n    })\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))\r\n  |> last()",
           "refId": "A"
@@ -2872,7 +3515,8 @@
     },
     {
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2908,7 +3552,7 @@
         "h": 7,
         "w": 5,
         "x": 11,
-        "y": 56
+        "y": 216
       },
       "hideTimeOverride": true,
       "id": 50,
@@ -2926,13 +3570,15 @@
           "values": false
         },
         "text": {},
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "8.3.3",
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: -30d)\r\n  |> filter(fn: (r) => \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r.interface =~ /^${LAN:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /bytes_recv|bytes_sent/\r\n  )\r\n  |> aggregateWindow(every: 1h, fn: last)\r\n  |> difference(nonNegative: true)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
           "refId": "A"
@@ -2967,74 +3613,115 @@
       "type": "stat"
     },
     {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": {
-        "uid": "${dataSource}"
+        "type": "influxdb",
+        "uid": "${DS_INFLUXDB2}"
       },
-      "decimals": 2,
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "packets_recv"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          }
+        ]
       },
-      "fill": 0,
-      "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 56
+        "y": 216
       },
-      "hiddenSeries": false,
       "id": 53,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "hideZero": true,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
       "maxDataPoints": 9000,
-      "nullPointMode": "null",
       "options": {
-        "alertThreshold": true
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
       },
-      "percentage": false,
-      "pluginVersion": "8.3.3",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
+      "pluginVersion": "10.2.2",
       "targets": [
         {
           "datasource": {
-            "uid": "${dataSource}"
+            "type": "influxdb",
+            "uid": "${DS_INFLUXDB2}"
           },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) =>\r\n    r.interface =~ /^${LAN:regex}$/ and \r\n    r.host =~ /^${Host:regex}$/ and\r\n    r._measurement == \"net\" and\r\n    r._field =~ /packets_recv|packets_sent/\r\n  )\r\n  |> aggregateWindow(every: 10s, fn: last)\r\n  |> derivative(unit:1s)\r\n  |> map(fn: (r) => ({_value:r._value, _time:r._time, _field:r._field}))",
           "refId": "A"
         }
       ],
-      "thresholds": [],
-      "timeRegions": [],
       "title": "${LAN} - Throughput",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
       "transformations": [
         {
           "id": "concatenate",
@@ -3055,48 +3742,24 @@
           }
         }
       ],
-      "type": "graph",
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:176",
-          "decimals": 2,
-          "format": "short",
-          "logBase": 2,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:177",
-          "decimals": 2,
-          "format": "short",
-          "label": "",
-          "logBase": 1,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
+      "type": "timeseries"
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 38,
   "tags": [
-    "OPNsense",
-    "telegraf"
+    "influxdb2",
+    "telegraf",
+    "elasticsearch",
+    "OPNsense"
   ],
   "templating": {
     "list": [
       {
         "current": {
           "selected": false,
-          "text": "InfluxDB",
-          "value": "InfluxDB"
+          "text": "influxdb2",
+          "value": "PDF3F1B59A8202144"
         },
         "hide": 0,
         "includeAll": false,
@@ -3114,8 +3777,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Elasticsearch",
-          "value": "Elasticsearch"
+          "text": "elasticsearch",
+          "value": "PAE1B8C8635429669"
         },
         "hide": 0,
         "includeAll": false,
@@ -3131,17 +3794,10 @@
         "type": "datasource"
       },
       {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "uid": "${dataSource}"
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n|> filter(fn:(r) => r._measurement == \"pf\")\r\n|> keyValues(keyColumns: [\"host\"])\r\n|> group()\r\n|> keep(columns: [\"host\"])\r\n|> distinct(column: \"host\")",
         "hide": 0,
@@ -3158,13 +3814,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
-          "uid": "${dataSource}"
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) => r._measurement == \"disk\" and\r\n  r.host =~ /^${Host:regex}$/)\r\n  |> keyValues(keyColumns: [\"device\"])\r\n  |> group()\r\n  |> keep(columns: [\"device\"])\r\n  |> distinct(column: \"device\")",
         "hide": 0,
@@ -3180,13 +3833,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
+        "current": {},
         "datasource": {
-          "uid": "${dataSource}"
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) => r._measurement == \"temperature\" and\r\n    r.host =~ /^${Host:regex}$/)\r\n  |> keyValues(keyColumns: [\"sensor\"])\r\n  |> group()\r\n  |> keep(columns: [\"sensor\"])\r\n  |> distinct(column: \"sensor\")",
         "hide": 0,
@@ -3202,17 +3852,10 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "uid": "${dataSource}"
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"interface\"\r\n  )\r\n  |> keyValues(keyColumns: [\"name\"])\r\n  |> group()\r\n  |> keep(columns: [\"name\"])\r\n  |> sort(columns: [\"name\"])\r\n",
         "hide": 0,
@@ -3223,23 +3866,16 @@
         "options": [],
         "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"interface\"\r\n  )\r\n  |> keyValues(keyColumns: [\"name\"])\r\n  |> group()\r\n  |> keep(columns: [\"name\"])\r\n  |> sort(columns: [\"name\"])\r\n",
         "refresh": 1,
-        "regex": "/^(?!enc0$|igb0$|igb2$|igb3$|ovpnc1$|wg0$)/",
+        "regex": "/^(?!igb\\d+$|ix\\d+$|ue\\d+$|re\\d+$|ovpnc\\d+$|wg\\d+$)/",
         "skipUrlSync": false,
         "sort": 0,
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
-          "uid": "${dataSource}"
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n|> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n|> filter(fn:(r) => r._measurement == \"gateways\" and\r\n  r.host =~ /^${Host:regex}$/)\r\n|> keyValues(keyColumns: [\"gateway_name\"])\r\n|> group()\r\n|> keep(columns: [\"gateway_name\"])\r\n|> distinct(column: \"gateway_name\")",
         "hide": 0,
@@ -3255,49 +3891,29 @@
         "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+        "current": {},
+        "datasource": {
+          "type": "influxdb",
+          "uid": "${DS_INFLUXDB2}"
         },
+        "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"interface\"\r\n  )\r\n  |> keyValues(keyColumns: [\"name\"])\r\n  |> group()\r\n  |> keep(columns: [\"name\"])\r\n  |> sort(columns: [\"name\"])\r\n",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "WAN",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "igb0",
-            "value": "igb0"
-          }
-        ],
-        "query": "igb0",
-        "queryValue": "",
+        "options": [],
+        "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => \r\n    r._measurement == \"interface\"\r\n  )\r\n  |> keyValues(keyColumns: [\"name\"])\r\n  |> group()\r\n  |> keep(columns: [\"name\"])\r\n  |> sort(columns: [\"name\"])\r\n",
+        "refresh": 1,
+        "regex": "/^(igb\\d+$|ix\\d+$|ue\\d+$|re\\d+$|ovpnc\\d+$|wg\\d+$)/",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "type": "query"
       },
       {
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
           "type": "influxdb",
-          "uid": "${dataSource}"
+          "uid": "${DS_INFLUXDB2}"
         },
         "definition": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r._measurement == \"interface\")\r\n  |> last()\r\n  |> group(columns: [\"tag\"])\r\n  |> keep(columns: [\"name\"])",
         "hide": 0,
@@ -3315,27 +3931,19 @@
       },
       {
         "allValue": "*",
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
           "type": "elasticsearch",
-          "uid": "${ESdataSource}"
+          "uid": "${DS_ELASTICSEARCH}"
         },
-        "definition": "{\"find\": \"terms\", \"field\": \"dst_port\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "definition": "{\"find\": \"terms\", \"field\": \"dst-port\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "hide": 0,
         "includeAll": true,
         "label": "FW_Destination Port",
         "multi": true,
         "name": "dst_port",
         "options": [],
-        "query": "{\"find\": \"terms\", \"field\": \"dst_port\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "query": "{\"find\": \"terms\", \"field\": \"dst-port\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3344,27 +3952,19 @@
       },
       {
         "allValue": "*",
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
           "type": "elasticsearch",
-          "uid": "${ESdataSource}"
+          "uid": "${DS_ELASTICSEARCH}"
         },
-        "definition": "{\"find\": \"terms\", \"field\": \"src_ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "definition": "{\"find\": \"terms\", \"field\": \"src-ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "hide": 0,
         "includeAll": true,
         "label": "FW_Source IP",
         "multi": true,
         "name": "src_ip",
         "options": [],
-        "query": "{\"find\": \"terms\", \"field\": \"src_ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "query": "{\"find\": \"terms\", \"field\": \"src-ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3373,27 +3973,19 @@
       },
       {
         "allValue": "*",
-        "current": {
-          "selected": false,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
+        "current": {},
         "datasource": {
           "type": "elasticsearch",
-          "uid": "${ESdataSource}"
+          "uid": "${DS_ELASTICSEARCH}"
         },
-        "definition": "{\"find\": \"terms\", \"field\": \"dst_ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "definition": "{\"find\": \"terms\", \"field\": \"dst-ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "hide": 0,
         "includeAll": true,
         "label": "FW_Destination IP",
         "multi": true,
         "name": "dst_ip",
         "options": [],
-        "query": "{\"find\": \"terms\", \"field\": \"dst_ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
+        "query": "{\"find\": \"terms\", \"field\": \"dst-ip\", \"query\": \"interface:$iface\", \"timestamp\": {\n\"timestamp\" : \"now-$__Interval_ms\"\n}}",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -3403,7 +3995,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -3414,7 +4006,7 @@
   },
   "timezone": "",
   "title": "OPNsense",
-  "uid": "suTmk8c7k",
-  "version": 7,
+  "uid": "suTmk8c7u",
+  "version": 8,
   "weekStart": ""
 }
