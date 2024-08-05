@@ -175,7 +175,11 @@ For Graylog, it's recommended to create an index set. To do so, navigate to Syst
 
 ![Graylog Index Set](https://www.bsmithio.com/post/opnsense-dashboard/indexset.png)
 
-Once that's done, download the [content pack](https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/OPNsense-pack.json) and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, Upload, then Install.
+Once that's done, download the [content pack](https://raw.githubusercontent.com/bsmithio/OPNsense-Dashboard/master/config/OPNsense-pack.json) and install it on Graylog by navigating to System -> Content Packs -> Upload, choose the pack, Upload
+
+Go back to the content packs and install the one you just uploaded
+
+> Note: make sure you actually install the pack you just uploaded
 
 Now, add your index set from earlier to the "OPNsense / filterlog" stream. Navigate to Streams -> More Actions -> Edit Stream -> select your index set and save.
 
